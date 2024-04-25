@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"sales-reports-service/internal/db/repository"
+	"sales-reports-service/internal/models"
 )
 
 type ApiHandler struct {
@@ -15,6 +17,12 @@ func (p *ApiHandler) HandleInternalServerError(w http.ResponseWriter, r *http.Re
 }
 
 func (p *ApiHandler) Get(w http.ResponseWriter, r *http.Request) {
+
+	saleRepository := repository.SalesRepository{}
+	sales := saleRepository.GetSalesData()
+
+	processor := models.ReportProcessor{FileName: "Relatório_de_vendas.csv"}
+	processor.Call(sales)
 
 	w.Header().Set("Content-Type", "application/json")
 
