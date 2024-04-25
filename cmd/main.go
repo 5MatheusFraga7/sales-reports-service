@@ -1,18 +1,20 @@
 package main
 
 import (
-	"sales-reports-service/internal/db"
-	"sales-reports-service/internal/db/adapters"
+	"fmt"
+	"log"
+	"net/http"
+	"sales-reports-service/api/routes"
 )
 
 func main() {
+	router := routes.SetupRouter()
 
-	// Conexão com banco
-
-	postgresAdapter := adapters.NewPostgreSQLAdapter()
-	err := db.OpenConnectionToDatabase(postgresAdapter)
-
-	if err != nil {
-		panic(err)
+	server := &http.Server{
+		Addr:    fmt.Sprintf("%s:%s", "localhost", "3000"),
+		Handler: router,
 	}
+
+	log.Printf(fmt.Sprintf("Server is running in %s:%s", "localhost", "3000"))
+	log.Fatal(server.ListenAndServe())
 }
